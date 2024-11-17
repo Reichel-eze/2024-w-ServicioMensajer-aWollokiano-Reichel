@@ -189,16 +189,22 @@ class Usuario {
   }
 
   // 5.b)
-  method leerUn(chat){
-    
+  method leerUn(elChat){
+    self.notificacionesDeUnChat(elChat).forEach({notificacion => notificacion.leida(true)})
   }
 
-  
+  method notificacionesDeUnChat(elChat) = notificaciones.filter({notificacion => notificacion.chat() == elChat})
+
+  // 5.c)
+  method notificacionesSinLeer() = notificaciones.filter({notificacion => !notificacion.leida()})
 
 }
 
 class Notificacion {
   const property chat        // la notificacion tiene un chat ("viene de un chat")
-  var property leida = false // una notificacion por default se inical como no leida  
+  var property leida = false // una notificacion por default se inical como no leida
+
+  //method chat() = chat
+
 }
 
