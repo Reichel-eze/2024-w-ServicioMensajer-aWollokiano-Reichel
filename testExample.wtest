@@ -1,1 +1,71 @@
 import example.*
+
+// Hacer al menos 3 tests que prueben el funcionamiento de:
+// - Un método de consulta.
+// - Un método de acción.
+// - Un método que falla.
+
+describe "Tests que prueban el funcionamiento" {
+
+    const eze = new Usuario(nombre = "ezequiel", memoria = 1000)
+    const marce = new Usuario(nombre = "marcela", memoria = 1000)
+    const aure = new Usuario(nombre = "aurelio", memoria = 1000)
+    const pepe = new Usuario(nombre = "pepito", memoria = 1)  // No tiene memoria casi
+
+    const chat1 = new Chat(participantes = [eze,marce])
+    const mensaje1 = new Mensaje(tipoDeContenido = new TipoTexto(elTexto = "Hola"), emisor = eze)
+
+    const chat2 = new Chat(participantes = [eze,pepe])
+    const mensaje2 = new Mensaje(tipoDeContenido = new TipoTexto(elTexto = "Hola que tal"), emisor = eze)
+
+    const chat3 = new Chat(participantes = [eze,aure])
+    const mensaje3 = new Mensaje(tipoDeContenido = new TipoTexto(elTexto = "Hola como estas"), emisor = eze)
+
+  test "Saber el espacio que ocupa un chat (METODO DE CONSULTA)" {
+    eze.agregarChat(chat1)
+    marce.agregarChat(chat1)
+    chat1.enviarMensaje(mensaje1)
+    assert.equals(10.2, chat1.espacioOcupado())
+    // 5 + 4 * 1.3 = 10.2
+  }
+
+  test "Enviar un mensaje a un chat, es decir, si se agrego el mensaje correctamente al chat (METODO DE EFECTO)" {
+    eze.agregarChat(chat1)
+    marce.agregarChat(chat1)
+    chat1.enviarMensaje(mensaje1)
+    assert.that(chat1.contieneElMensaje(mensaje1))
+  }  
+
+  test "Mensajes mas pesados de un usuario" {
+    eze.agregarChat(chat1)
+    marce.agregarChat(chat1)
+    chat1.enviarMensaje(mensaje1)
+    assert.equals([mensaje1], eze.mensajesMasPesados())
+  }  
+
+  test "Leer un chat" {
+    eze.agregarChat(chat1)
+    marce.agregarChat(chat1)
+    chat1.enviarMensaje(mensaje1)
+    marce.leerUn(chat1) // que lea todas las notificaciones realcionadas a ese chat
+    assert.equals(0, marce.notificacionesSinLeer().size())  // porque marce leyo las notificaciones
+    assert.equals(1, eze.notificacionesSinLeer().size())    // porque eze NO leyo las notificaciones
+  }  
+
+  test "No se puede enviar un mensaje a un chat si un participante del mismo no cuenta con espacio suficiente (METODO DE FALLA)" {
+    eze.agregarChat(chat2)
+    pepe.agregarChat(chat2)
+    assert.throwsException({chat2.enviarMensaje(mensaje2)})   // porque no llego a guardarse el mensaje en el chat
+    assert.notThat(chat1.contieneElMensaje(mensaje1))
+  } 
+
+  test "Buscar un texto en los chats de un usuario" {
+    eze.agregarChat(chat1)
+    marce.agregarChat(chat1)
+    eze.agregarChat(chat3)
+    aure.agregarChat(chat3)
+    chat1.enviarMensaje(mensaje1)
+    chat3.enviarMensaje(mensaje3)
+    assert.equals([chat1, chat3], eze.buscarTexto("Hola"))
+  } 
+}

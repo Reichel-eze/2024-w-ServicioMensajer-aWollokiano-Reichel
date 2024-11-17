@@ -10,7 +10,7 @@ class Mensaje {
 
   // Los strings entienden el mensaje contains(otroTexto) que indica si el parámetro se encuentra dentro del string.
 
-  method contiene(texto) =  emisor.contains(texto) or tipoDeContenido.contiene(texto) 
+  method contiene(texto) =  emisor.contiene(texto) or tipoDeContenido.contiene(texto) 
 
 }
 
@@ -82,6 +82,7 @@ class Chat {
   const participantes = []
 
   method cantidadMensajes() = mensajes.size() 
+  method contieneElMensaje(mensaje) = mensajes.contains(mensaje)  
 
   // 1) Saber el espacio que ocupa un chat, que es la suma de los pesos de los mensajes enviados.
   method espacioOcupado() = mensajes.sum({mensaje => mensaje.peso()})
@@ -111,7 +112,7 @@ class Chat {
   // 2. Un mensaje contiene un texto si es parte del nombre de quien lo envía, si es parte del texto del mensaje, 
   // o del nombre del contacto enviado
   method contiene(texto) = mensajes.any({mensaje => mensaje.contiene(texto)})
-  
+
   // 4)  
   method mensajeMasPesado() = mensajes.max({mensaje => mensaje.peso()})
 
@@ -161,7 +162,7 @@ class Usuario {
     chats.add(chat)
   }
 
-  method espacioOcupado() = chats.sum({chat => chat.espacioOcuapado()})
+  method espacioOcupado() = chats.sum({chat => chat.espacioOcupado()})
   
   method tieneEspacioSufientePara(mensaje) = self.espacioOcupado() + mensaje.peso() <= memoria
 
@@ -172,6 +173,8 @@ class Usuario {
 
   // 1.
   method buscarTexto(texto) = chats.filter({chat => chat.contiene(texto)}) 
+
+  method contiene(texto) = nombre.contains(texto)
 
   // 4) Dado un usuario, conocer sus mensajes más pesados. 
   // - Que es el conjunto formado por el mensaje más pesado de cada uno de sus chat.
@@ -184,7 +187,7 @@ class Usuario {
   //  c) Conocer las notificaciones sin leer de un usuario.
 
   // 5.a)
-  method recibirNotificacion(notificacion) {
+  method notificar(notificacion) {
     notificaciones.add(notificacion)
   }
 
@@ -205,6 +208,6 @@ class Notificacion {
   var property leida = false // una notificacion por default se inical como no leida
 
   //method chat() = chat
-
+  method leer(){ leida = true }
 }
 
